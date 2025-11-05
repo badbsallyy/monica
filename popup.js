@@ -126,7 +126,16 @@ function switchTab(tabName) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   
   document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-  document.getElementById(`${tabName}${tabName === 'all' ? 'Links' : ''}Tab`).classList.add('active');
+  
+  // Map tab names to panel IDs
+  const tabPanelIds = {
+    'all': 'allLinksTab',
+    'tags': 'tagsTab',
+    'add': 'addLinkTab'
+  };
+  
+  const panelId = tabPanelIds[tabName] || `${tabName}Tab`;
+  document.getElementById(panelId).classList.add('active');
 }
 
 // Save current page
@@ -228,7 +237,6 @@ function editCurrentLink() {
   
   // Update form submit to edit instead of add
   const form = document.getElementById('addLinkForm');
-  const oldHandler = form.onsubmit;
   
   form.onsubmit = async (e) => {
     e.preventDefault();

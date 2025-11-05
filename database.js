@@ -152,7 +152,11 @@ class LinkDatabase {
    * @returns {string} Unique ID
    */
   _generateId() {
-    return `${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+    // Generate timestamp + random string, ensuring minimum length
+    const timestamp = Date.now();
+    const randomPart = Math.random().toString(36).substring(2);
+    const paddedRandom = randomPart.padEnd(9, '0').substring(0, 9);
+    return `${timestamp}-${paddedRandom}`;
   }
 }
 
