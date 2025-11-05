@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monica - Web Links Manager</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Monica</h1>
+      <p class="subtitle">Web Links Manager</p>
+    </header>
+
+    <div class="actions">
+      <button id="saveCurrentPage" class="btn btn-primary">
+        <span class="icon">+</span> Save Current Page
+      </button>
+    </div>
+
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Search links..." />
+      <button id="searchBtn" class="btn btn-small">Search</button>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="all">All Links</button>
+      <button class="tab" data-tab="tags">Tags</button>
+      <button class="tab" data-tab="add">Add Link</button>
+    </div>
+
+    <div class="tab-content">
+      <!-- All Links Tab -->
+      <div id="allLinksTab" class="tab-panel active">
+        <div id="linksList" class="links-list">
+          <p class="empty-state">No links saved yet. Start by saving the current page!</p>
+        </div>
+      </div>
+
+      <!-- Tags Tab -->
+      <div id="tagsTab" class="tab-panel">
+        <div id="tagsList" class="tags-container">
+          <p class="empty-state">No tags yet.</p>
+        </div>
+      </div>
+
+      <!-- Add Link Tab -->
+      <div id="addLinkTab" class="tab-panel">
+        <form id="addLinkForm" class="form">
+          <div class="form-group">
+            <label for="linkUrl">URL *</label>
+            <input type="url" id="linkUrl" required placeholder="https://example.com">
+          </div>
+          <div class="form-group">
+            <label for="linkTitle">Title *</label>
+            <input type="text" id="linkTitle" required placeholder="Link title">
+          </div>
+          <div class="form-group">
+            <label for="linkDescription">Description</label>
+            <textarea id="linkDescription" rows="3" placeholder="Optional description"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="linkTags">Tags (comma-separated)</label>
+            <input type="text" id="linkTags" placeholder="tag1, tag2, tag3">
+          </div>
+          <button type="submit" class="btn btn-primary">Add Link</button>
+        </form>
+      </div>
+    </div>
+
+    <footer>
+      <button id="exportBtn" class="btn btn-small">Export</button>
+      <button id="clearBtn" class="btn btn-small btn-danger">Clear All</button>
+      <span id="linkCount" class="count">0 links</span>
+    </footer>
+  </div>
+
+  <!-- Link Details Modal -->
+  <div id="linkModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2 id="modalTitle"></h2>
+      <p id="modalUrl" class="modal-url"></p>
+      <p id="modalDescription"></p>
+      <div id="modalTags" class="modal-tags"></div>
+      <div class="modal-actions">
+        <button id="modalEdit" class="btn btn-small">Edit</button>
+        <button id="modalDelete" class="btn btn-small btn-danger">Delete</button>
+        <a id="modalOpen" class="btn btn-small" target="_blank">Open Link</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
