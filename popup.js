@@ -44,6 +44,7 @@ function setupEventListeners() {
 
   // Modal
   document.querySelector('.close').addEventListener('click', closeModal);
+  document.getElementById('modalEdit').addEventListener('click', editCurrentLink);
   document.getElementById('modalDelete').addEventListener('click', deleteCurrentLink);
   window.addEventListener('click', (e) => {
     if (e.target.id === 'linkModal') closeModal();
@@ -209,6 +210,52 @@ function showLinkDetails(linkId) {
 function closeModal() {
   document.getElementById('linkModal').style.display = 'none';
   selectedLink = null;
+}
+
+// Edit current link
+function editCurrentLink() {
+  if (!selectedLink) return;
+  
+  // Switch to Add Link tab and populate with current data
+  closeModal();
+  switchTab('add');
+  
+  // Fill form with current link data
+  document.getElementById('linkUrl').value = selectedLink.url;
+  document.getElementById('linkTitle').value = selectedLink.title;
+  document.getElementById('linkDescription').value = selectedLink.description || '';
+  document.getElementById('linkTags').value = selectedLink.tags.join(', ');
+  
+  // Update form submit to edit instead of add
+  const form = document.getElementById('addLinkForm');
+  const oldHandler = form.onsubmit;
+  
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+    
+    const url = document.getElementById('linkUrl').value;
+    const title = document.getElementById('linkTitle').value;
+    const description = document.getElementById('linkDescription').value;
+    const tagsInput = document.getElementById('linkTags').value;
+    const tags = tagsInput.split(',').map(t => t.trim()).filter(t => t);
+
+    const updatedLink = await sendMessage('UPDATE_LINK', {
+      id: selectedLink.id,
+      updates: { url, title, description, tags }
+    });
+
+    if (updatedLink && !updatedLink.error) {
+      showNotification('Link updated successfully!');
+      document.getElementById('addLinkForm').reset();
+      await loadLinks();
+      switchTab('all');
+      
+      // Restore original form handler
+      form.onsubmit = handleAddLink;
+    } else {
+      showNotification('Error updating link', 'error');
+    }
+  };
 }
 
 // Delete current link

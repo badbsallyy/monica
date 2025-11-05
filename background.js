@@ -108,8 +108,44 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
  * Allows other extensions or scripts to interact with the database
  */
 chrome.runtime.onMessageExternal.addListener((request, sender, sendResponse) => {
-  // Forward to internal message handler
-  chrome.runtime.sendMessage(request, sendResponse);
+  // Handle external requests with the same logic as internal requests
+  const handleAsync = async () => {
+    try {
+      switch (request.action) {
+        case 'GET_ALL_LINKS':
+          return await db.getAll();
+          
+        case 'GET_LINK':
+          return await db.getById(request.id);
+          
+        case 'ADD_LINK':
+          return await db.add(request.data);
+          
+        case 'UPDATE_LINK':
+          return await db.update(request.id, request.updates);
+          
+        case 'DELETE_LINK':
+          return await db.delete(request.id);
+          
+        case 'SEARCH_LINKS':
+          return await db.search(request.query);
+          
+        case 'GET_BY_TAG':
+          return await db.getByTag(request.tag);
+          
+        case 'GET_ALL_TAGS':
+          return await db.getAllTags();
+          
+        default:
+          throw new Error(`Unknown action: ${request.action}`);
+      }
+    } catch (error) {
+      console.error('External API Error:', error);
+      return { error: error.message };
+    }
+  };
+  
+  handleAsync().then(sendResponse);
   return true;
 });
 
